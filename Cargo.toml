@@ -1,0 +1,8 @@
+[package]
+name = "rusty-python"
+version = "0.1.0"
+authors = ["Davide Aversa <thek3nger@gmail.com>"]
+
+[lib]
+name = "rustypython"
+crate-type = ["dylib"]
