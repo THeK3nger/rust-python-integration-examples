@@ -27,5 +27,37 @@ lib.process()
 print("Running process2(5)")
 lib.process2(5)
 
+# We want to pass a Paython List. We cannot do this directly we need to
+# convert PLists into CLists.
+
+# This say that the arguments of Rust "sum_list" are of the following types.
+# However in this case this works even without this line...
+lib.sum_list.argtypes = (ctypes.POINTER(ctypes.c_int32), ctypes.c_size_t)
+
+# Then we can start using our function.
+print("Summing in Rust the list of first 1000 numbers.")
+number_list = list(range(1001))
+c_number_list = (ctypes.c_int32 * len(number_list))(*number_list)
+result = lib.sum_list(c_number_list, len(number_list))
+print("Result is {}. Expected 500500.".format(result))
+
+# This is horrible. Let's write something to wrap up this.
+def sum_list(nums):
+    c_number_list = (ctypes.c_int32 * len(nums))(*nums)
+    return lib.sum_list(c_number_list, len(nums))
+    
+# ... and just call this from now on. (This is always the right choice!)
+print("Summing in Rust the list of the first 500 numbers.")
+print("Result is {}. Expected 125250.".format(sum_list(list(range(501)))))
+
+# This works for tuples too!
+print("Summing in Rust (1,43,56).")
+print("Result is {}.".format(sum_list((1,43,56))))
+
+# ...and sets too!
+print("Summing in Rust {1,43,56}.")
+print("Result is {}.".format(sum_list({1,43,56})))
+    
+
 # Congratulations!
 print("done")

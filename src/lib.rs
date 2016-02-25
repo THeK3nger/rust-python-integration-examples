@@ -16,6 +16,9 @@ use libc::{size_t,int32_t};
 /// Use this to load the standard library interface to threading.
 use std::thread;
 
+/// Use this to work with Rust slices.
+use std::slice;
+
 /// The first function we want to try is a simple no-input/no-outut function.
 ///
 /// The algorithm spawns 10 threads, and each one will increas a counter
@@ -61,4 +64,12 @@ pub extern fn process2(threads_number: int32_t) {
         println!("Thread finished with count={}",
         h.join().map_err(|_| "Could not join a thread!").unwrap());
     }
+}
+
+/// Now we want to pass to Rust a Python's list. We cannot do that directly
+/// so we need a bit more magic.
+#[no_mangle]
+pub extern fn sum_list(data: *const int32_t, length: size_t) -> int32_t {
+    let nums = unsafe { slice::from_raw_parts(data, length as usize) };
+    nums.iter().fold(0, |acc, i| acc + i)
 }
