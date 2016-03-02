@@ -59,5 +59,26 @@ print("Summing in Rust {1,43,56}.")
 print("Result is {}.".format(sum_list({1,43,56})))
     
 
+# OBJECTS
+# First, we need to define a Python object which represents the Rust struct.
+# This is done extending `ctypes.Structure` class and using `_fields_` instead
+# of classic Python attributes.
+class Point(ctypes.Structure):
+    _fields_ = [("x", ctypes.c_double), ("y", ctypes.c_double)]
+    
+    def __str__(self):
+        return "Point ({},{})".format(self.x, self.y)
+
+# Then we specify as usual the type declaration of the Rust function.
+lib.middle.argtypes = (Point, Point)
+lib.middle.restype = Point
+
+# And then we can easily use it as a native python function!
+p1 = Point(1.0, 5.0)
+p2 = Point(1.0, 10.0)
+
+res_point = lib.middle(p1, p2)
+print(res_point)
+
 # Congratulations!
 print("done")

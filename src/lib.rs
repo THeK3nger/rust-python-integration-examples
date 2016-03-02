@@ -73,3 +73,21 @@ pub extern fn sum_list(data: *const int32_t, length: size_t) -> int32_t {
     let nums = unsafe { slice::from_raw_parts(data, length as usize) };
     nums.iter().fold(0, |acc, i| acc + i)
 }
+
+/// STUCTS AND OBJECTS
+
+/// We want to represtent a 2D point as a Rust structure and move this point
+/// between Python and Rust.
+
+#[repr(C)]
+pub struct Point {
+    x: f64,
+    y: f64,
+}
+
+/// Now we write a function who compute the middle point of a segment
+/// represented by two Point.
+#[no_mangle]
+pub extern fn middle(p1: Point, p2: Point) -> Point {
+    Point { x: (p1.x + p2.x)/2.0, y: (p1.y + p2.y)/2.0 }
+} 
